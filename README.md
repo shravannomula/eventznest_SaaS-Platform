@@ -125,6 +125,25 @@ The result: one platform, one deployment pipeline, and one set of security guara
 
 ---
 
+## 🧠 Key Challenges & Solutions
+
+**Guaranteeing tenants can never see each other's data.**
+Filtering every query by a tenant ID in application code is fragile — one forgotten `WHERE` clause is a data breach. Instead, each tenant gets its own PostgreSQL schema, and a middleware resolves the tenant from the request and sets the connection's `search_path` before any query runs. Isolation is enforced by the database itself, and an unresolved tenant fails closed rather than leaking into a shared context.
+
+**Running multiple industries on one codebase.**
+A vertical/module engine maps each tenant's business type to a template of features and workflows at provisioning time, so catering and karate-academy tenants share the same core, deployment, and security model while seeing entirely different products.
+
+**Keeping the admin plane separate from the tenant plane.**
+The platform super-admin console and the tenant apps run as two independent authentication realms, so credentials and sessions never cross the line between *managing the platform* and *using a tenant*.
+
+**Getting money math right.**
+All financial values use exact decimal arithmetic end to end — quotations, invoices, payments, refunds, and receipts — avoiding the rounding drift that floating-point introduces.
+
+**Per-tenant subdomains with zero-touch TLS.**
+Caddy terminates HTTPS with an automatic wildcard certificate, so every tenant subdomain is served securely without any manual certificate management.
+
+---
+
 ## 💳 Payments
 
 Money is handled with **exact decimal arithmetic** throughout — quotations, invoices, payments, refunds, and receipts — to eliminate the rounding drift that floating-point math introduces. Refund and receipt flows are first-class, not afterthoughts.
@@ -142,12 +161,12 @@ Money is handled with **exact decimal arithmetic** throughout — quotations, in
 
 ---
 
-## 📸 Screenshots & Demo
+## 🗺️ Roadmap
 
-> _Coming soon._ A guided walkthrough and screenshots of the tenant admin app, the super-admin console, and the marketing site will be added here.
-
-- 🎬 **Live demo:** _link coming soon_
-- 🖼️ **Screenshots:** _gallery coming soon_
+- 🌱 **More verticals** — the template model makes adding a new industry a configuration task, not a rebuild.
+- 🔁 **Self-service tenant onboarding** — let new tenants provision themselves through a guided flow.
+- 📊 **Per-vertical analytics & reporting** — dashboards tailored to each business type.
+- 🌐 **Public live demo** — a seeded, read-only tenant to explore the product hands-on.
 
 ---
 
